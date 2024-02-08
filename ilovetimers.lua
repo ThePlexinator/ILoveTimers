@@ -25,7 +25,7 @@ function timersMod.setTimerPaused(identifier,toggle)
 end
 function timersMod.getTimerPaused(identifier)
     local data = timersMod.findTimer(identifier)
-    if not data then return false end
+    if not data then return 'notfound' end
 
     return data.paused
 end
@@ -37,14 +37,14 @@ function timersMod.removeTimer(identifier)
     return true
 end
 
-function timersMod.newTimer(identifier,timePerIter,maxInc,execution)
+function timersMod.newTimer(identifier,timePerIter,maxIter,execution)
     if timersMod.findTimer(identifier) then return false end
 
     local timerTable = {}
 
     timerTable.identifier = identifier
     timerTable.maxDt = timePerIter
-    timerTable.maxInc = maxInc
+    timerTable.maxIter = maxIter
     timerTable.execution = execution
 
     timerTable.dt = 0
@@ -65,7 +65,7 @@ function timersMod.update(dt)
                 data.crntInc = data.crntInc + 1
                 data.execution(data)
 
-                if (data.crntInc >= data.maxInc) and data.maxInc > 0 then
+                if (data.crntInc >= data.maxIter) and data.maxIter > 0 then
                     table.remove(timersMod.currentTimers,index)
                 end
             end
