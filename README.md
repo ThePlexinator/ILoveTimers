@@ -14,7 +14,7 @@ Simple timer library for LÖVE, based off of Garry's Mod Lua's "timer" library.
 
 ```setTimerPaused(identifier {string},toggle {bool})```: Pauses or resumes the specified timer based on the toggle argument, if it exists.
 
-```getTimerPaused(identifier {string})```: Returns whether or not the timer is currently paused, if it exists.
+```getTimerPaused(identifier {string})```: Returns whether or not the timer is currently paused. Returns 'notfound' if it couldn't be found.
 
 ```removeTimer(identifier {string})```: Removes the timer identified by the given identifier, if it exists.
 
