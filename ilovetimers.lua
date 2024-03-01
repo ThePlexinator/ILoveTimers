@@ -68,7 +68,7 @@ function timersMod.newTimer(identifier,timePerIter,maxIter,execution,isPrecise)
 end
 
 function timersMod.update(dt)
-    local loveTime = love.event.getTime()
+    local loveTime = love.timer.getTime()
     for index,data in pairs(timersMod.currentTimers) do
         
         if not data.paused then
