@@ -9,11 +9,19 @@ function timersMod.findTimer(identifier)
     end
     return false
 end
-function timersMod.rewindTimer(identifier)
+function timersMod.rewindTimer(identifier,resetCrntInt)
     local data = timersMod.findTimer(identifier)
     if not data then return false end
 
-    data.dt,data.crntInc = 0,0
+    if data.dt then
+        data.dt = 0
+    else
+        data.preciseTime = love.timer.getTime()
+    end
+    if resetCrntInt then
+        data.crntInc = 0
+    end
+
     return true
 end
 function timersMod.setTimerPaused(identifier,toggle)
@@ -37,7 +45,7 @@ function timersMod.removeTimer(identifier)
     return true
 end
 
-function timersMod.newTimer(identifier,timePerIter,maxIter,execution)
+function timersMod.newTimer(identifier,timePerIter,maxIter,execution,isPrecise)
     if timersMod.findTimer(identifier) then return false end
 
     local timerTable = {}
@@ -47,7 +55,11 @@ function timersMod.newTimer(identifier,timePerIter,maxIter,execution)
     timerTable.maxIter = maxIter
     timerTable.execution = execution
 
-    timerTable.dt = 0
+    if (isPrecise) then
+        timerTable.preciseTime = love.timer.getTime()
+    else
+        timerTable.dt = 0
+    end
     timerTable.crntInc = 0
     timerTable.paused = false
 
@@ -59,9 +71,21 @@ function timersMod.update(dt)
     for index,data in pairs(timersMod.currentTimers) do
         
         if not data.paused then
-            data.dt = data.dt + dt
-            if data.dt >= data.maxDt then
-                data.dt = 0
+            local didSurpass = false
+
+            if data.dt then
+                data.dt = data.dt + dt
+                didSurpass = (data.dt >= data.maxDt)
+            else
+                didSurpass = ((love.timer.getTime() - data.preciseTime) >= data.maxDt)
+            end
+            if didSurpass then
+                if data.dt then
+                    data.dt = 0
+                else
+                    data.preciseTime = love.timer.getTime()
+                end
+
                 data.crntInc = data.crntInc + 1
                 data.execution(data)
 
