@@ -68,6 +68,7 @@ function timersMod.newTimer(identifier,timePerIter,maxIter,execution,isPrecise)
 end
 
 function timersMod.update(dt)
+    local loveTime = love.event.getTime()
     for index,data in pairs(timersMod.currentTimers) do
         
         if not data.paused then
@@ -77,13 +78,13 @@ function timersMod.update(dt)
                 data.dt = data.dt + dt
                 didSurpass = (data.dt >= data.maxDt)
             else
-                didSurpass = ((love.timer.getTime() - data.preciseTime) >= data.maxDt)
+                didSurpass = ((loveTime - data.preciseTime) >= data.maxDt)
             end
             if didSurpass then
                 if data.dt then
                     data.dt = 0
                 else
-                    data.preciseTime = love.timer.getTime()
+                    data.preciseTime = loveTime
                 end
 
                 data.crntInc = data.crntInc + 1
